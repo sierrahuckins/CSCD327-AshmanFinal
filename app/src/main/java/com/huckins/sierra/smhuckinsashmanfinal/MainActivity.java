@@ -8,9 +8,18 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    Button btnLeft;
+    Button btnRight;
+    Button btnUp;
+    Button btnDown;
+    TextView txtLevel;
+    TextView txtDots;
+    MazeView maze;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,6 +27,24 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        btnLeft = (Button)findViewById(R.id.btnLeft);
+        btnRight = (Button)findViewById(R.id.btnRight);
+        btnUp = (Button)findViewById(R.id.btnUp);
+        btnDown = (Button)findViewById(R.id.btnDown);
+        txtLevel = (TextView)findViewById(R.id.txtLevel);
+        txtDots = (TextView)findViewById(R.id.txtDots);
+        maze = (MazeView)findViewById(R.id.cviewMaze);
+
+        btnLeft.setOnClickListener(this);
+        btnRight.setOnClickListener(this);
+        btnUp.setOnClickListener(this);
+        btnDown.setOnClickListener(this);
+
+        maze.setLevel(1);
+        txtLevel.setText("Level: " + maze.getLevel());
+        txtDots.setText("Dots To Eat: " + maze.getCakesRemaining());
+
 
     }
 
@@ -42,8 +69,36 @@ public class MainActivity extends AppCompatActivity {
 
         //setup about toast
         if (id == R.id.action_about) {
-            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015 Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015\n Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        Button pressed = (Button)v;
+
+        if (pressed.equals(findViewById(R.id.btnLeft))) {
+            maze.setAshmanFacing(Character.direction.LEFT);
+        }
+        else if (pressed.equals(findViewById(R.id.btnRight))) {
+            maze.setAshmanFacing(Character.direction.RIGHT);
+        }
+        else if (pressed.equals(findViewById(R.id.btnUp))) {
+            maze.setAshmanFacing(Character.direction.UP);
+        }
+        else {
+            maze.setAshmanFacing(Character.direction.DOWN);
+        }
+
+    }
+
+    public void startStopGame(View v){
+        if (!maze.active) {
+            maze.startTimer();
+        }
+        else {
+            maze.stopTimer();
+        }
     }
 }
