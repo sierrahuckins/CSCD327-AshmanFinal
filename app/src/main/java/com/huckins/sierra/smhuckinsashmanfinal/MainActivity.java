@@ -17,8 +17,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button btnRight;
     Button btnUp;
     Button btnDown;
-    TextView txtLevel;
-    TextView txtDots;
+
     MazeView maze;
 
     @Override
@@ -32,8 +31,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRight = (Button)findViewById(R.id.btnRight);
         btnUp = (Button)findViewById(R.id.btnUp);
         btnDown = (Button)findViewById(R.id.btnDown);
-        txtLevel = (TextView)findViewById(R.id.txtLevel);
-        txtDots = (TextView)findViewById(R.id.txtDots);
         maze = (MazeView)findViewById(R.id.cviewMaze);
 
         btnLeft.setOnClickListener(this);
@@ -42,10 +39,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnDown.setOnClickListener(this);
 
         maze.setLevel(1);
-        txtLevel.setText("Level: " + maze.getLevel());
-        txtDots.setText("Dots To Eat: " + maze.getCakesRemaining());
-
-
     }
 
     @Override
@@ -99,6 +92,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else {
             maze.stopTimer();
+            Toast.makeText(this,"Game Paused",Toast.LENGTH_SHORT).show();
         }
     }
 }

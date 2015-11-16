@@ -11,28 +11,41 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.Toast;
 
 /**
  * Created by Sierra on 11/8/2015.
  */
 public class MazeView extends View {
+    private Context context;
+
+    //member variables to handle dynamic resizing of custom view
     private final int MAZESIZE = 14;
     private final float HEIGHT = (2 * MAZESIZE);
     private final float WIDTH = (2 * MAZESIZE);
-    private float ratio = HEIGHT/WIDTH;
     private float incomingWidth;
     private float incomingHeight;
     private float scale;
+
+    //member variables to handle timer
     private Handler clockHandler;
     private Runnable clockTimer;
     private final int TIMER_MSEC = 70;
+
+    //member variables to handle drawing
     private Path path;
     private Paint paint;
     private int level = 1;
+
+    //member variables for in game variables
     private Ashman ashman;
     private int cakesRemaining = 0;
-    private Ghost[] ghosts = new Ghost[4];
+    private Ghost[] ghosts = {new Ghost(1,1, Character.direction.RIGHT),new Ghost(1,12,Character.direction.LEFT),
+                                new Ghost(12,1, Character.direction.RIGHT), new Ghost(12,12, Character.direction.LEFT)};
     public boolean active = false;
+    public boolean gameLost = false;
+
+    //member variables to control maze
     private enum cellState implements Parcelable {WALL, EMPTY, CAKE;
 
         @Override
@@ -44,7 +57,6 @@ public class MazeView extends View {
         public void writeToParcel(Parcel dest, int flags) {
         }
     };
-
     private cellState[] currentMaze;
     private final cellState[] maze1 = {cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,
                                     cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
@@ -94,37 +106,59 @@ public class MazeView extends View {
     }
 
     private void construct(Context context) {
+        this.context = context;
+
+        //setup drawing variables if they don't already exist
         if (path == null)
             path = new Path();
         if (paint == null)
             paint = new Paint();
+        paint.setStyle(Paint.Style.FILL);
 
+        //set current maze based on level
         if (level == 1)
             currentMaze = maze1;
         else
             currentMaze = maze2;
 
-        paint.setStyle(Paint.Style.FILL);
-
+        //create ashman if he doesn't already exist
         if (ashman == null) {
             ashman = new Ashman(7,6, Character.direction.RIGHT);
         }
 
+        //fix acceleration display problem in emulator
         setLayerType(this.LAYER_TYPE_SOFTWARE, null);
 
+        //create timer
         clockHandler = new Handler() ;
         clockTimer = new Runnable() {
             @Override
             public void run() {
-                ashman.move( isWall(ashman.getCurrentX(), ashman.getCurrentY(), ashman.getFacing()));
+                //set ashman's current position in maze to empty
+                int arrayPos = ashman.getCurrentX() + (ashman.getCurrentY() * MAZESIZE);
+                currentMaze[arrayPos] = cellState.EMPTY;
+
+                //move ashman
+                ashman.move(isWall(ashman.getCurrentX(), ashman.getCurrentY(), ashman.getFacing()));
+
+                //move ghosts
+                for (int i = 0; i < ghosts.length; i++)
+                    ghosts[i].move(isWall(ghosts[i].getCurrentX(), ghosts[i].getCurrentY(), ghosts[i].getFacing()));
+
                 invalidate();
                 clockHandler.postDelayed(this, TIMER_MSEC) ;
             }
         };
     }
 
+    //gets and sets as needed
+    public cellState[] getCurrentMaze() {
+        return currentMaze;
+    }
+
+    //this set is needed for interaction with listeners in main activity
     public void setAshmanFacing(Character.direction facing) {
-        ashman.setFacing(facing);
+        ashman.facing = facing;
     }
 
     public void setLevel(int level) {
@@ -143,8 +177,9 @@ public class MazeView extends View {
         return this.cakesRemaining;
     }
 
+    //timer control functions
     public void startTimer() {
-        clockHandler.postDelayed(clockTimer,TIMER_MSEC);
+        clockHandler.postDelayed(clockTimer, TIMER_MSEC);
         active = true;
     }
 
@@ -153,35 +188,39 @@ public class MazeView extends View {
         active = false;
     }
 
-    public cellState[] getCurrentMaze() {
-        return currentMaze;
-    }
-
+    //check whether a coordinate is a wall
+    //used for both ashman and ghosts
     public boolean isWall(int x, int y, Character.direction facing ) {
+        //convert coordinates to 1D array position
         int arrayPos = x + (y * MAZESIZE);
 
+        //get 1D array position of the coordinate in front of given coordinate
         if (facing == Character.direction.LEFT) {
             arrayPos = arrayPos - MAZESIZE;
+            //check wraparound
             if (y == 0)
                 arrayPos = arrayPos + (MAZESIZE * MAZESIZE);
         }
         else if (facing == Character.direction.RIGHT) {
             arrayPos = arrayPos + MAZESIZE;
+            //check wraparound
             if (y == 13)
                 arrayPos = arrayPos - (MAZESIZE * MAZESIZE);
         }
         else if (facing == Character.direction.UP) {
             arrayPos = arrayPos - 1;
+            //check wraparound
             if (x == 0)
                 arrayPos = arrayPos + (MAZESIZE - 1);
         }
         else {
             arrayPos = arrayPos + 1;
+            //check wraparound
             if (x == 13)
-                arrayPos = arrayPos + (MAZESIZE - 1);
+                arrayPos = arrayPos - (MAZESIZE - 1);
         }
 
-
+        //return status of coordinate
         if (currentMaze[arrayPos] == cellState.WALL)
             return true;
         else
@@ -191,6 +230,9 @@ public class MazeView extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.scale(scale, scale);
+        //reset cakes remaining with every redraw
+        //they will be recalculated when cells are drawn
+        //TODO get cakes to update
         cakesRemaining = 0;
 
         //draw maze by iterating through array
@@ -205,8 +247,25 @@ public class MazeView extends View {
 
         //draw ashman
         ashman.draw(canvas, path, paint);
+
+        //draw ghosts
+        for (int x = 0; x < ghosts.length; x++) {
+            ghosts[x].draw(canvas, path, paint);
+        }
+
+        //check for game end condition
+        for (int x = 0; x < ghosts.length; x++) {
+            if (ghosts[x].currentX == ashman.currentX && ghosts[x].currentY == ashman.currentY) {
+                stopTimer();
+                gameLost = true;
+                Toast.makeText(context, "Game Over!", Toast.LENGTH_SHORT).show();
+                //TODO facilitate restart
+                //TODO (optional) dialog instead of toast?
+            }
+        }
     }
 
+    //draws a single cell, based on cell status
     private void drawCell(Canvas canvas, int x){
         if (currentMaze[x] == cellState.WALL) {
             paint.setColor(Color.BLACK);
@@ -223,10 +282,15 @@ public class MazeView extends View {
             paint.setColor(Color.WHITE);
             canvas.drawCircle(1f,1f,0.5f,paint);
 
+            //increment cakes remaining
+            //serves as a counter with every redraw
             cakesRemaining++;
         }
     }
 
+    //this method handles dynamic scaling of custom view
+    //based on available width and height
+    //respects aspect ratio of original drawing
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -253,6 +317,7 @@ public class MazeView extends View {
         incomingHeight = (float)h;
     }
 
+    //TODO methods to handle saving state
    /* @Override
     protected Parcelable onSaveInstanceState() {
         Bundle bundle = new Bundle();

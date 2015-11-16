@@ -9,50 +9,39 @@ import android.graphics.Path;
  */
 public abstract class Character {
     public enum direction {LEFT,RIGHT,UP,DOWN};
-    private direction facing;
-    private int currentX;
-    private int currentY;
+    protected direction facing;
+    protected int currentX;
+    protected int currentY;
+    //needs to be private so it can only be incremented, not set
     private float stepCounter;
 
     abstract void move(boolean isWall);
     abstract void draw(Canvas canvas, Path path, Paint paint);
 
-    public int getCurrentX() {
+    protected int getCurrentX() {
         return currentX;
     }
 
-    public int getCurrentY() {
+    protected int getCurrentY() {
         return currentY;
     }
 
-    public direction getFacing() {
+    protected direction getFacing() {
         return facing;
     }
 
-    public float getStepCounter() {
+    protected float getStepCounter() {
         return stepCounter;
     }
-
-    public void setCurrentX(int currentX) {
-        this.currentX = currentX;
-    }
-
-    public void setCurrentY(int currentY) {
-        this.currentY = currentY;
-    }
-
-    public void setFacing(direction facing) {
-        this.facing = facing;
-    }
-
-    public void setStepCounter(int step) {
-        this.stepCounter = step;
-    }
-
-    public void incrementStepCounter() {
+    protected void incrementStepCounter() {
         stepCounter++;
         if (stepCounter > 4f) {
             stepCounter = 1f;
         }
     }
+
+    protected void resetStepCounter() {
+        stepCounter = 0;
+    }
+
 }
