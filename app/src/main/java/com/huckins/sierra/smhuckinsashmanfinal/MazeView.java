@@ -1,5 +1,6 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -11,6 +12,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -44,48 +46,8 @@ public class MazeView extends View {
                                 new Ghost(12,1, Character.direction.RIGHT), new Ghost(12,12, Character.direction.LEFT)};
     public boolean active = false;
     public boolean gameLost = false;
-
-    //member variables to control maze
-    private enum cellState implements Parcelable {WALL, EMPTY, CAKE;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-        }
-    };
-    private cellState[] currentMaze;
-    private final cellState[] maze1 = {cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-                                    cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.EMPTY,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL};
-    private final cellState[] maze2 = {cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,
-                                    cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.EMPTY,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-                                    cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL};
+    private MazeFactory mazeFactory = new MazeFactory();
+    private MazeFactory.cellState[] currentMaze;
 
     public MazeView(Context context) {
         super(context);
@@ -116,10 +78,7 @@ public class MazeView extends View {
         paint.setStyle(Paint.Style.FILL);
 
         //set current maze based on level
-        if (level == 1)
-            currentMaze = maze1;
-        else
-            currentMaze = maze2;
+        currentMaze = mazeFactory.getMaze(level);
 
         //create ashman if he doesn't already exist
         if (ashman == null) {
@@ -136,7 +95,7 @@ public class MazeView extends View {
             public void run() {
                 //set ashman's current position in maze to empty
                 int arrayPos = ashman.getCurrentX() + (ashman.getCurrentY() * MAZESIZE);
-                currentMaze[arrayPos] = cellState.EMPTY;
+                currentMaze[arrayPos] = MazeFactory.cellState.EMPTY;
 
                 //move ashman
                 ashman.move(isWall(ashman.getCurrentX(), ashman.getCurrentY(), ashman.getFacing()));
@@ -152,7 +111,7 @@ public class MazeView extends View {
     }
 
     //gets and sets as needed
-    public cellState[] getCurrentMaze() {
+    public MazeFactory.cellState[] getCurrentMaze() {
         return currentMaze;
     }
 
@@ -221,7 +180,7 @@ public class MazeView extends View {
         }
 
         //return status of coordinate
-        if (currentMaze[arrayPos] == cellState.WALL)
+        if (currentMaze[arrayPos] == MazeFactory.cellState.WALL)
             return true;
         else
             return false;
@@ -232,7 +191,6 @@ public class MazeView extends View {
         canvas.scale(scale, scale);
         //reset cakes remaining with every redraw
         //they will be recalculated when cells are drawn
-        //TODO get cakes to update
         cakesRemaining = 0;
 
         //draw maze by iterating through array
@@ -259,19 +217,35 @@ public class MazeView extends View {
                 stopTimer();
                 gameLost = true;
                 Toast.makeText(context, "Game Over!", Toast.LENGTH_SHORT).show();
+                break;
                 //TODO facilitate restart
                 //TODO (optional) dialog instead of toast?
             }
+        }
+
+        //update cakes counter
+        TextView cakesText = (TextView)((Activity)context).findViewById(R.id.txtDots);
+        cakesText.setText("Dots To Eat: " + cakesRemaining);
+
+        //reset game if player has won
+        if (cakesRemaining == 0) {
+            stopTimer();
+            gameLost = false;
+            Toast.makeText(context, "You win!", Toast.LENGTH_SHORT).show();
+            if (level == 1)
+                restartGame(1);
+            else
+                restartGame(2);
         }
     }
 
     //draws a single cell, based on cell status
     private void drawCell(Canvas canvas, int x){
-        if (currentMaze[x] == cellState.WALL) {
+        if (currentMaze[x] == MazeFactory.cellState.WALL) {
             paint.setColor(Color.BLACK);
             canvas.drawRect(0,0,2,2,paint);
         }
-        else if (currentMaze[x] == cellState.EMPTY) {
+        else if (currentMaze[x] == MazeFactory.cellState.EMPTY) {
             paint.setColor(Color.BLUE);
             canvas.drawRect(0,0,2,2,paint);
         }
@@ -286,6 +260,31 @@ public class MazeView extends View {
             //serves as a counter with every redraw
             cakesRemaining++;
         }
+    }
+
+    //sets member variables back to initial values
+    //to prepare for a new game
+    private void restartGame(int newLevel) {
+        level = newLevel;
+
+        //member variables for in game variables
+        ashman = null;
+        cakesRemaining = 0;
+
+        Ghost[] resetGhosts = {new Ghost(1,1, Character.direction.RIGHT),new Ghost(1,12,Character.direction.LEFT),
+                new Ghost(12,1, Character.direction.RIGHT), new Ghost(12,12, Character.direction.LEFT)};
+        ghosts = resetGhosts;
+
+        active = false;
+        gameLost = false;
+
+    }
+
+    //cheat for testing purposes
+    //removes all walls and cakes except one cake
+    //so tester can quickly cause winning condition
+    public void activateCheat() {
+        currentMaze = mazeFactory.getMaze(-1);
     }
 
     //this method handles dynamic scaling of custom view

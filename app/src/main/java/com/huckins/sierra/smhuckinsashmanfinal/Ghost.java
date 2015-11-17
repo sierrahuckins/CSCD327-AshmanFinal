@@ -29,7 +29,7 @@ public class Ghost extends Character {
 
         //determine how far into next step ghost is
         //this will allow for smooth movement between cells
-        float offset = getStepCounter() / 3;
+        float offset = getStepCounter() / substeps;
 
         //rotate canvas based on facing direction
         if (getFacing() == direction.LEFT)
@@ -57,9 +57,9 @@ public class Ghost extends Character {
             //will be drawn partially moved forward
             incrementStepCounter();
 
-            //if stepcounter has been reset to 1,
+            //if stepcounter has been reset to 0,
             //then actually update ghost's coordinates
-            if (getStepCounter() == 1) {
+            if (getStepCounter() == 0) {
 
                 if (facing == direction.LEFT) {
                     currentX =(currentX + 0);

@@ -12,8 +12,9 @@ public abstract class Character {
     protected direction facing;
     protected int currentX;
     protected int currentY;
-    //needs to be private so it can only be incremented, not set
+    //needs to be private so it can only be incremented, not set arbitrarily
     private float stepCounter;
+    protected float substeps = 3f;
 
     abstract void move(boolean isWall);
     abstract void draw(Canvas canvas, Path path, Paint paint);
@@ -35,8 +36,8 @@ public abstract class Character {
     }
     protected void incrementStepCounter() {
         stepCounter++;
-        if (stepCounter > 4f) {
-            stepCounter = 1f;
+        if (stepCounter > substeps) {
+            resetStepCounter();
         }
     }
 

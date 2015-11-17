@@ -12,11 +12,12 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
     Button btnLeft;
     Button btnRight;
     Button btnUp;
     Button btnDown;
+    TextView instructions;
 
     MazeView maze;
 
@@ -31,12 +32,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnRight = (Button)findViewById(R.id.btnRight);
         btnUp = (Button)findViewById(R.id.btnUp);
         btnDown = (Button)findViewById(R.id.btnDown);
+        instructions = (TextView)findViewById(R.id.txtInstructions);
         maze = (MazeView)findViewById(R.id.cviewMaze);
 
         btnLeft.setOnClickListener(this);
         btnRight.setOnClickListener(this);
         btnUp.setOnClickListener(this);
         btnDown.setOnClickListener(this);
+        instructions.setOnLongClickListener(this);
 
         maze.setLevel(1);
     }
@@ -55,15 +58,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
         //setup about toast
         if (id == R.id.action_about) {
-            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015\n Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015\n    Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
         }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -84,6 +83,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             maze.setAshmanFacing(Character.direction.DOWN);
         }
 
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        maze.activateCheat();
+        return true;
     }
 
     public void startStopGame(View v){

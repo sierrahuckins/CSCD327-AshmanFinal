@@ -26,7 +26,7 @@ public class Ashman extends Character {
 
         //determine how far into next step ashman is
         //this will allow for smooth movement between cells
-        float offset = getStepCounter() / 3;
+        float offset = getStepCounter() / substeps;
 
         //rotate canvas based on facing direction
         if (facing == direction.LEFT)
@@ -72,9 +72,9 @@ public class Ashman extends Character {
             //will be drawn partially moved forward
             incrementStepCounter();
 
-            //if stepcounter has been reset to 1,
+            //if stepcounter has been reset to 0,
             //then actually update ashman's coordinates
-            if (getStepCounter() == 1) {
+            if (getStepCounter() == 0) {
                 if (facing == direction.LEFT) {
                     currentX =(currentX + 0);
                     //allow for wrap around left side of map
