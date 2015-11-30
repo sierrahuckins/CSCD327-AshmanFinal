@@ -1,77 +1,74 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Created by Sierra on 11/16/2015.
  */
 public class MazeFactory {
-    //member variables to control maze
-    public enum cellState implements Parcelable {WALL, EMPTY, CAKE;
-
-        @Override
-        public int describeContents() {
-            return 0;
-        }
-
-        @Override
-        public void writeToParcel(Parcel dest, int flags) {
-        }
-    };
-
-    private final cellState[] maze1 = {cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-            cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.EMPTY,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL};
-    private final cellState[] maze2 = {cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,
-            cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.EMPTY,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.CAKE,cellState.WALL,
-            cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.CAKE,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL};
-    private final cellState[] cheat = {cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.CAKE,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.EMPTY,cellState.WALL,
-            cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL,cellState.WALL};
+    private final int[] maze1 = {0,0,1,0,0,0,0,0,0,0,1,0,0,0,
+            0,1,1,1,1,1,1,1,1,1,1,1,1,0,
+            0,1,0,1,0,0,0,0,1,0,0,0,1,0,
+            1,1,0,1,0,1,1,1,1,1,1,0,1,1,
+            0,0,0,1,0,1,0,0,0,0,1,0,1,0,
+            0,1,1,1,0,1,0,1,1,1,1,1,1,0,
+            0,1,0,1,1,1,0,2,0,0,1,0,1,0,
+            0,1,0,1,0,0,0,1,0,0,1,0,1,0,
+            1,1,0,1,0,1,1,1,0,0,1,0,1,1,
+            0,1,1,1,0,1,0,0,0,0,1,0,1,0,
+            0,1,1,0,0,1,1,1,1,1,1,0,1,0,
+            0,1,1,0,0,0,0,1,0,0,0,0,1,0,
+            0,1,1,1,1,1,1,1,1,1,1,1,1,0,
+            0,0,1,0,0,0,0,0,0,0,1,0,0,0};
+    private final int[] maze2 = {0,0,0,0,0,1,0,0,1,0,0,0,0,0,
+            1,1,1,1,1,1,1,1,1,1,1,1,1,1,
+            0,1,0,0,1,0,0,0,0,0,1,1,1,0,
+            0,1,0,0,1,1,1,1,1,0,0,0,1,0,
+            0,1,0,0,1,1,1,1,1,1,0,0,1,0,
+            1,1,0,0,0,0,0,0,0,1,1,0,1,1,
+            0,1,0,1,1,1,1,1,0,0,1,1,1,0,
+            0,1,1,1,0,0,0,1,1,0,1,0,1,0,
+            0,1,0,0,0,1,1,1,1,0,1,0,1,0,
+            0,1,1,1,1,1,0,1,1,0,1,0,1,0,
+            0,1,0,0,1,1,0,1,0,0,1,1,1,0,
+            1,1,1,0,1,0,0,1,0,0,0,0,1,1,
+            0,1,1,1,1,1,1,1,1,1,1,1,1,0,
+            0,0,0,0,0,1,0,0,1,0,0,0,0,0};
+    private final int[] cheat = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,
+            0,1,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,2,2,2,2,2,2,2,2,2,2,2,2,0,
+            0,0,0,0,0,0,0,0,0,0,0,0,0,0};
 
     public MazeFactory () {}
 
-    public cellState[] getMaze (int level) {
-        if (level == 1)
-            return maze1;
-        else if (level == 2)
-            return maze2;
-        else
-            return cheat;
+    public int[] getMaze (int level) {
+        int[] toReturn = new int[(MazeView.MAZESIZE * MazeView.MAZESIZE)];
+
+        if (level == 1) {
+            initMaze(toReturn, maze1);
+        }
+        else if (level == 2){
+            initMaze(toReturn, maze2);
+        }
+        else{
+            initMaze(toReturn, cheat);
+        }
+
+        return toReturn;
+    }
+
+    private void initMaze(int[] toReturn, int[] original) {
+        for (int i = 0; i < (original.length); i++) {
+            toReturn[i] = original[i];
+        }
     }
 
 }

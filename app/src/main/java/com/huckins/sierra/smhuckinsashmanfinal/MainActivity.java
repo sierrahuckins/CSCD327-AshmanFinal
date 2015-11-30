@@ -1,8 +1,6 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -35,6 +33,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         instructions = (TextView)findViewById(R.id.txtInstructions);
         maze = (MazeView)findViewById(R.id.cviewMaze);
 
+
         btnLeft.setOnClickListener(this);
         btnRight.setOnClickListener(this);
         btnUp.setOnClickListener(this);
@@ -60,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //setup about toast
         if (id == R.id.action_about) {
-            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015\n    Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
+            Toast.makeText(this,"Sierra Huckins CSCD 327 Fall 2015\n      Final Project - Ashman Game",Toast.LENGTH_SHORT).show();
         }
 
         return super.onOptionsItemSelected(item);
@@ -93,11 +92,20 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void startStopGame(View v){
         if (!maze.active) {
-            maze.startTimer();
+            if (maze.gameLost)
+                maze.resetGame(1);
+            else
+                maze.startTimer();
         }
         else {
             maze.stopTimer();
             Toast.makeText(this,"Game Paused",Toast.LENGTH_SHORT).show();
         }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        maze.stopTimer();
     }
 }

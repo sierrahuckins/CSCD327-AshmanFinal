@@ -49,7 +49,6 @@ public class Ghost extends Character {
 
     //method to move ghost if his next step in the direction he is facing
     //if not a wall
-    //TODO figure out why ghost is stutter stepping
     @Override
     void move(boolean isWall) {
         if (!isWall) {
