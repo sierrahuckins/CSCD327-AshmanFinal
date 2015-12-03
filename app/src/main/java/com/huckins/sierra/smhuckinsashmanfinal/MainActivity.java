@@ -10,14 +10,15 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener {
-    Button btnLeft;
-    Button btnRight;
-    Button btnUp;
-    Button btnDown;
-    TextView instructions;
-
-    MazeView maze;
+public class MainActivity extends AppCompatActivity implements View.OnClickListener, View.OnLongClickListener, IGameInteractions {
+    private Button btnLeft;
+    private Button btnRight;
+    private Button btnUp;
+    private Button btnDown;
+    private TextView instructions;
+    private TextView levelText;
+    private TextView cakesText;
+    private MazeView maze;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,21 +27,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        //get references to buttons and updatable text fields
         btnLeft = (Button)findViewById(R.id.btnLeft);
         btnRight = (Button)findViewById(R.id.btnRight);
         btnUp = (Button)findViewById(R.id.btnUp);
         btnDown = (Button)findViewById(R.id.btnDown);
         instructions = (TextView)findViewById(R.id.txtInstructions);
+        levelText = (TextView)findViewById(R.id.txtLevel);
+        cakesText = (TextView)findViewById(R.id.txtDots);
         maze = (MazeView)findViewById(R.id.cviewMaze);
 
-
+        //set necessary onClickListeners
         btnLeft.setOnClickListener(this);
         btnRight.setOnClickListener(this);
         btnUp.setOnClickListener(this);
         btnDown.setOnClickListener(this);
         instructions.setOnLongClickListener(this);
-
-        maze.setLevel(1);
     }
 
     @Override
@@ -70,16 +72,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Button pressed = (Button)v;
 
         if (pressed.equals(findViewById(R.id.btnLeft))) {
-            maze.setAshmanFacing(Character.direction.LEFT);
+            maze.changeCharacterDirection(Character.direction.LEFT);
         }
         else if (pressed.equals(findViewById(R.id.btnRight))) {
-            maze.setAshmanFacing(Character.direction.RIGHT);
+            maze.changeCharacterDirection(Character.direction.RIGHT);
         }
         else if (pressed.equals(findViewById(R.id.btnUp))) {
-            maze.setAshmanFacing(Character.direction.UP);
+            maze.changeCharacterDirection(Character.direction.UP);
         }
         else {
-            maze.setAshmanFacing(Character.direction.DOWN);
+            maze.changeCharacterDirection(Character.direction.DOWN);
         }
 
     }
@@ -88,6 +90,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public boolean onLongClick(View v) {
         maze.activateCheat();
         return true;
+    }
+
+    public void cakesChanged(int newCakes){
+        cakesText.setText("Dots To Eat: " + newCakes);
+    }
+
+    public void levelChanged(int newLevel) {
+        levelText.setText("Level: " + newLevel);
     }
 
     public void startStopGame(View v){

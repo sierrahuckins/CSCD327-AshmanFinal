@@ -8,10 +8,13 @@ import android.graphics.Path;
 import java.util.Random;
 
 /**
- * Created by Sierra on 11/11/2015.
- */
+ *Ghost.java
+ *Author: Sierra Huckins
+ *Last Updated: 20151130
+ *Description: Subclass of Character. Holds method specific to Ghost Character.
+ **/
 public class Ghost extends Character {
-    Random random = new Random();
+    private Random random = new Random();
 
     public Ghost (int x, int y, direction facing) {
         this.facing = facing;
@@ -59,36 +62,7 @@ public class Ghost extends Character {
             //if stepcounter has been reset to 0,
             //then actually update ghost's coordinates
             if (getStepCounter() == 0) {
-
-                if (facing == direction.LEFT) {
-                    currentX =(currentX + 0);
-                    //allow for wrap around left side of map
-                    if (currentY == 0)
-                        currentY = (currentY + 14 - 1);
-                    else
-                        currentY = (currentY - 1);
-                } else if (facing == direction.UP) {
-                    //allow for wrap around top of map
-                    if (currentX == 0)
-                        currentX = (currentX + 14 - 1);
-                    else
-                        currentX = (currentX - 1);
-                    currentY = (currentY + 0);
-                } else if (facing == direction.DOWN) {
-                    //allow for wrap around bottom of map
-                    if (currentX == 13)
-                        currentX = (currentX - 14 + 1);
-                    else
-                        currentX = (currentX + 1);
-                    currentY = (currentY + 0);
-                } else {
-                    currentX = (currentX + 0);
-                    //allow for wrap around right side of map
-                    if (currentY == 13)
-                        currentY = (currentY - 14 + 1);
-                    else
-                        currentY = (currentY + 1);
-                }
+                updateCoord();
 
                 //randomly turn ghost after some full movements
                 //allows ghost chance to go sideways

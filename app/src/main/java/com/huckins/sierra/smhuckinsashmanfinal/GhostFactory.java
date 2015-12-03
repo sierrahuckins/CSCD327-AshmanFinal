@@ -1,8 +1,11 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
 /**
- * Created by Sierra on 11/16/2015.
- */
+ *GhostFactory.java
+ *Author: Sierra Huckins
+ *Last Updated: 20151130
+ *Description: Factory to create new sets of ghosts as needed for each level using final sets stored here.
+ **/
 public class GhostFactory {
     private final Ghost[] ghostsLevel1 = {new Ghost(1, 1, Character.direction.RIGHT), new Ghost(1, 12, Character.direction.LEFT),
             new Ghost(12, 7, Character.direction.RIGHT)};

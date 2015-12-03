@@ -21,7 +21,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
         android:layout_gravity="right"
         android:layout_marginTop="6dp"
         android:layout_marginBottom="10dp"
@@ -31,7 +31,7 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
             android:layout_gravity="center">
 
@@ -40,40 +40,59 @@
                 android:layout_height="wrap_content"
                 android:text="To pause or continue, tap gameboard. "
                 android:id="@+id/txtInstructions"
-                android:layout_marginBottom="10dp" />
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp" />
+
+            <TextView
+                android:layout_width="140dp"
+                android:layout_height="wrap_content"
+                android:text="Green dots grant temporary immunity!"
+                android:id="@+id/textView"
+                android:textStyle="bold"
+                android:textColor="#2ba121"
+                android:layout_marginBottom="5dp" />
 
             <TextView
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Level : "
                 android:id="@+id/txtLevel"
-                android:layout_marginTop="8dp" />
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp" />
 
             <TextView
                 android:layout_width="140dp"
                 android:layout_height="wrap_content"
                 android:text="Dots To Eat: "
                 android:id="@+id/txtDots"
-                android:layout_marginTop="8dp" />
+                android:textStyle="bold"
+                android:layout_marginBottom="5dp" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:layout_marginLeft="10dp"
             android:orientation="vertical"
             android:layout_weight="1"
-            android:layout_gravity="center_horizontal">
+            android:layout_gravity="center_horizontal"
+            android:weightSum="3">
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:text="UP"
-                android:id="@+id/btnUp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:weightSum="1"
                 android:layout_weight="1"
-                android:layout_gravity="center" />
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:text="UP"
+                    android:id="@+id/btnUp"
+                    android:layout_weight=".5" />
+            </LinearLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -82,40 +101,39 @@
                 android:layout_weight="1">
 
                 <Button
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="LEFT"
                     android:id="@+id/btnLeft"
                     android:layout_below="@+id/btnUp"
-                    android:layout_alignParentLeft="true"
-                    android:layout_alignParentStart="true"
                     android:layout_weight="1"
                     android:layout_gravity="center_horizontal" />
 
                 <Button
-                    android:layout_width="100dp"
-                    android:layout_height="40dp"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:text="RIGHT"
                     android:id="@+id/btnRight"
-
-                    android:layout_alignTop="@+id/btnLeft"
-                    android:layout_toRightOf="@+id/btnLeft"
-                    android:layout_toEndOf="@+id/btnLeft"
                     android:layout_weight="1"
                     android:layout_gravity="center_horizontal" />
             </LinearLayout>
 
-            <Button
-                android:layout_width="100dp"
-                android:layout_height="40dp"
-                android:text="DOWN"
-                android:id="@+id/btnDown"
-                android:layout_gravity="center"
-                android:layout_below="@+id/btnLeft"
-                android:layout_alignLeft="@+id/btnUp"
-                android:layout_alignStart="@+id/btnUp"
-                android:layout_centerHorizontal="true"
-                android:layout_weight="1" />
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:weightSum="1"
+                android:layout_weight="1"
+                android:gravity="center">
+
+                <Button
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:text="DOWN"
+                    android:id="@+id/btnDown"
+                    android:layout_gravity="center"
+                    android:layout_weight=".5" />
+            </LinearLayout>
 
         </LinearLayout>
 

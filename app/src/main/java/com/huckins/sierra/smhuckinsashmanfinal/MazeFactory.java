@@ -1,13 +1,16 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
 /**
- * Created by Sierra on 11/16/2015.
- */
+ *MazeFactory.java
+ *Author: Sierra Huckins
+ *Last Updated: 20151130
+ *Description: Factory to create new mazes as needed using final mazes stored here.
+ **/
 public class MazeFactory {
     private final int[] maze1 = {0,0,1,0,0,0,0,0,0,0,1,0,0,0,
             0,1,1,1,1,1,1,1,1,1,1,1,1,0,
             0,1,0,1,0,0,0,0,1,0,0,0,1,0,
-            1,1,0,1,0,1,1,1,1,1,1,0,1,1,
+            1,1,0,1,0,3,1,1,1,1,1,0,1,1,
             0,0,0,1,0,1,0,0,0,0,1,0,1,0,
             0,1,1,1,0,1,0,1,1,1,1,1,1,0,
             0,1,0,1,1,1,0,2,0,0,1,0,1,0,
@@ -15,12 +18,12 @@ public class MazeFactory {
             1,1,0,1,0,1,1,1,0,0,1,0,1,1,
             0,1,1,1,0,1,0,0,0,0,1,0,1,0,
             0,1,1,0,0,1,1,1,1,1,1,0,1,0,
-            0,1,1,0,0,0,0,1,0,0,0,0,1,0,
+            0,1,1,0,0,0,0,3,0,0,0,0,1,0,
             0,1,1,1,1,1,1,1,1,1,1,1,1,0,
             0,0,1,0,0,0,0,0,0,0,1,0,0,0};
     private final int[] maze2 = {0,0,0,0,0,1,0,0,1,0,0,0,0,0,
             1,1,1,1,1,1,1,1,1,1,1,1,1,1,
-            0,1,0,0,1,0,0,0,0,0,1,1,1,0,
+            0,1,0,0,1,0,0,0,0,0,1,3,1,0,
             0,1,0,0,1,1,1,1,1,0,0,0,1,0,
             0,1,0,0,1,1,1,1,1,1,0,0,1,0,
             1,1,0,0,0,0,0,0,0,1,1,0,1,1,
@@ -28,7 +31,7 @@ public class MazeFactory {
             0,1,1,1,0,0,0,1,1,0,1,0,1,0,
             0,1,0,0,0,1,1,1,1,0,1,0,1,0,
             0,1,1,1,1,1,0,1,1,0,1,0,1,0,
-            0,1,0,0,1,1,0,1,0,0,1,1,1,0,
+            0,1,0,0,3,1,0,1,0,0,1,1,1,0,
             1,1,1,0,1,0,0,1,0,0,0,0,1,1,
             0,1,1,1,1,1,1,1,1,1,1,1,1,0,
             0,0,0,0,0,1,0,0,1,0,0,0,0,0};
@@ -65,6 +68,7 @@ public class MazeFactory {
         return toReturn;
     }
 
+    //copies stored maze to new maze for use in custom view
     private void initMaze(int[] toReturn, int[] original) {
         for (int i = 0; i < (original.length); i++) {
             toReturn[i] = original[i];

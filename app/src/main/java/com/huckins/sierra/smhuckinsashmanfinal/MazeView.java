@@ -1,6 +1,5 @@
 package com.huckins.sierra.smhuckinsashmanfinal;
 
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -12,30 +11,34 @@ import android.os.Handler;
 import android.os.Parcelable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * Created by Sierra on 11/8/2015.
- */
+ *MazeView.java
+ *Author: Sierra Huckins
+ *Last Updated: 20151130
+ *Description: Custom view to draw a proportionally scaled maze game board
+ *Also holds majority of in game logic due to use of Runnable for game timing.
+ **/
 public class MazeView extends View {
     private Context context;
+    private IGameInteractions updateInterface;
+
+    //maze states
     static final int WALL = 0;
     static final int CAKE = 1;
     static final int EMPTY = 2;
+    static final int POWERUP = 3;
 
     //member variables to handle dynamic resizing of custom view
     static final int MAZESIZE = 14;
     private final float HEIGHT = (2 * MAZESIZE);
     private final float WIDTH = (2 * MAZESIZE);
-    private float incomingWidth;
-    private float incomingHeight;
     private float scale;
 
     //member variables to handle timer
     private Handler clockHandler;
     private Runnable clockTimer;
-    private Runnable delayRestart;
     private final int TIMER_MSEC = 70;
 
     //member variables to handle drawing
@@ -46,19 +49,20 @@ public class MazeView extends View {
     //member variables for in game variables
     private Ashman ashman;
     private int cakesRemaining = 0;
-    private GhostFactory ghostFactory = new GhostFactory();
+    private final GhostFactory ghostFactory = new GhostFactory();
     private Ghost[] ghosts;
     private boolean ghostsMove = false;
     public boolean active = false;
     public boolean gameLost = false;
-    private MazeFactory mazeFactory = new MazeFactory();
+    private final MazeFactory mazeFactory = new MazeFactory();
     private int[] currentMaze;
 
     //member variables to handle audio
     private MediaPlayer mp = null;
-    private int currentPlaying;
     private boolean newGame = true;
 
+    //three required constructors
+    //all call same construct method for simplicity
     public MazeView(Context context) {
         super(context);
 
@@ -80,11 +84,8 @@ public class MazeView extends View {
     private void construct(Context context) {
         this.context = context;
 
-        //play new board sound
-        //if this is first play after launch
-        if(newGame == true) {
-            playSound(R.raw.begin);
-            newGame = false;
+        if (!isInEditMode()) {
+            this.updateInterface = (IGameInteractions)context;
         }
 
         //setup drawing variables if they don't already exist
@@ -102,7 +103,7 @@ public class MazeView extends View {
 
         //create ashman if he doesn't already exist
         if (ashman == null) {
-            ashman = new Ashman(7,6, Character.direction.RIGHT);
+            ashman = new Ashman();
         }
 
         //fix acceleration display problem in emulator
@@ -115,6 +116,9 @@ public class MazeView extends View {
             public void run() {
                 //set ashman's current position in maze to empty
                 int arrayPos = ashman.getCurrentX() + (ashman.getCurrentY() * MAZESIZE);
+                //checks if ashman ate a powerup
+                if (currentMaze[arrayPos] == POWERUP)
+                    ashman.setPowerUpActive();
                 currentMaze[arrayPos] = EMPTY;
 
                 //move ashman
@@ -122,6 +126,13 @@ public class MazeView extends View {
 
                 //move ghosts
                 //condition moves ghosts slower if level is 1
+                moveGhosts();
+
+                invalidate();
+                clockHandler.postDelayed(this, TIMER_MSEC) ;
+            }
+
+            private void moveGhosts() {
                 if (level == 1 && ghostsMove) {
                     for (int i = 0; i < ghosts.length; i++)
                         ghosts[i].move(isWall(ghosts[i].getCurrentX(), ghosts[i].getCurrentY(), ghosts[i].getFacing()));
@@ -134,25 +145,36 @@ public class MazeView extends View {
                 else {
                     ghostsMove = true;
                 }
-
-                invalidate();
-                clockHandler.postDelayed(this, TIMER_MSEC) ;
-            }
-        };
-
-        delayRestart = new Runnable() {
-            @Override
-            public void run() {
-                invalidate();
             }
         };
     }
 
-    public void playSound(int sound) {
-        if (mp == null || currentPlaying != sound) {
-            mp = null;
+    //plays the sound effects
+    //only allows for one media player to exist at a time
+    private void playSound(int sound) {
+        //creates new media player for incoming sound if nothing is currently playing
+        if (mp == null) {
             mp = MediaPlayer.create(context, sound);
-            currentPlaying = sound;
+
+            mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                //nulls out media player when audio is complete
+                @Override
+                public void onCompletion(
+                        MediaPlayer mPlayer) {
+                    mp.release();
+                    mp = null;
+                }
+            });
+        }
+        //if media player is not null and sound requested is anything other than eat sound
+        //stop and release media player so current clip doesn't have to finish
+        //create new media player for new sound
+        else if (sound != R.raw.eat) {
+            mp.stop();
+            mp.release();
+            mp = null;
+
+            mp = MediaPlayer.create(context, sound);
 
             mp.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
@@ -163,7 +185,9 @@ public class MazeView extends View {
                 }
             });
         }
-        else if (currentPlaying == sound) {
+        //if requested sound is eat and eat is currently playing
+        //pause and seek to beginning of sound
+        else if (sound == R.raw.eat) {
             mp.pause();
             mp.seekTo(0);
         }
@@ -172,19 +196,37 @@ public class MazeView extends View {
 
     }
 
-    //this set is needed for interaction with listeners in main activity
-    public void setAshmanFacing(Character.direction facing) {
-        ashman.facing = facing;
-    }
+    public void changeCharacterDirection(Character.direction newDirection) {
+        Boolean isWall = isWall(ashman.getCurrentX(), ashman.getCurrentY(), ashman.getFacing());
 
-    public void setLevel(int level) {
-        this.level = level;
-    }
+        //determine if character is going opposite of previous direction
+        //in order to aid with jumping effect when turning backwards
+        if (newDirection == Character.direction.LEFT) {
+            if (ashman.getFacing() == Character.direction.RIGHT && !isWall)
+                ashman.setBackward();
+        }
+        else if (newDirection == Character.direction.RIGHT) {
+            if (ashman.getFacing() == Character.direction.LEFT && !isWall)
+                ashman.setBackward();
+        }
+        else if (newDirection == Character.direction.UP) {
+            if (ashman.getFacing() == Character.direction.DOWN && !isWall)
+                ashman.setBackward();
+        }
+        else {
+            if (ashman.getFacing() == Character.direction.UP && !isWall)
+                ashman.setBackward();
+        }
 
+        //set new direction
+        ashman.setFacing(newDirection);
+    }
     //timer control functions
     public void startTimer() {
-        clockHandler.postDelayed(clockTimer, TIMER_MSEC);
-        active = true;
+        if (mp == null) {
+            clockHandler.postDelayed(clockTimer, TIMER_MSEC);
+            active = true;
+        }
     }
 
     public void stopTimer() {
@@ -233,6 +275,13 @@ public class MazeView extends View {
 
     @Override
     protected void onDraw(Canvas canvas) {
+        //play beginning sound and setup level if this is first play after launch
+        if(newGame) {
+            level = 1;
+            playSound(R.raw.begin);
+            newGame = false;
+        }
+
         canvas.scale(scale, scale);
         //reset cakes remaining with every redraw
         //they will be recalculated when cells are drawn
@@ -240,14 +289,7 @@ public class MazeView extends View {
         cakesRemaining = 0;
 
         //draw maze by iterating through array
-        for (int x = 0; x < MAZESIZE * MAZESIZE; x++) {
-            canvas.save();
-            int xCoord = x % (int)MAZESIZE;
-            int yCoord = x / (int)MAZESIZE;
-            canvas.translate(yCoord * 2, xCoord * 2);
-            drawCell(canvas,x);
-            canvas.restore();
-        }
+        drawMaze(canvas);
 
         //draw ashman
         ashman.draw(canvas, path, paint);
@@ -257,45 +299,34 @@ public class MazeView extends View {
             ghosts[x].draw(canvas, path, paint);
         }
 
-        //fill in level data
-        TextView levelText = (TextView)((Activity)context).findViewById(R.id.txtLevel);
-        levelText.setText("Level: " + level);
+        //callback to containing activity to update cakes
+        updateInterface.cakesChanged(cakesRemaining);
 
-        //update cakes counter
-        TextView cakesText = (TextView)((Activity)context).findViewById(R.id.txtDots);
-        cakesText.setText("Dots To Eat: " + cakesRemaining);
+        //callback to containing activity to update level text
+        updateInterface.levelChanged(level);
 
         //play cake sound if one was eaten
         if (cakesRemaining < temp)
             playSound(R.raw.eat);
 
         //check for game ended by ghost collision
-        for (int x = 0; x < ghosts.length; x++) {
-            if (ghosts[x].currentX == ashman.currentX && ghosts[x].currentY == ashman.currentY) {
-                stopTimer();
-                gameLost = true;
-                Toast.makeText(context, "You got eaten! Level restarted!", Toast.LENGTH_SHORT).show();
-                resetGame(level);
-                playSound(R.raw.death);
-                break;
-                //TODO (optional) dialog instead of toast?
-            }
+        //only if ashman is not powered up
+        if (!ashman.getPowerUpState()) {
+            checkGameLost();
         }
 
         //check for game ended by all cakes eaten
-        if (cakesRemaining == 0 && active == true) {
-            stopTimer();
-            gameLost = false;
-            if (level == 1) {
-                Toast.makeText(context, "You beat level " + level + "!\n Let's try level 2!", Toast.LENGTH_SHORT).show();
-                resetGame(2);
-                playSound(R.raw.win);
-            }
-            else {
-                Toast.makeText(context, "You beat level " + level + "!\nCongrats, you won!", Toast.LENGTH_SHORT).show();
-                resetGame(1);
-                playSound(R.raw.win);
-            }
+        checkGameWon();
+    }
+
+    private void drawMaze(Canvas canvas) {
+        for (int x = 0; x < MAZESIZE * MAZESIZE; x++) {
+            canvas.save();
+            int xCoord = x % (int)MAZESIZE;
+            int yCoord = x / (int)MAZESIZE;
+            canvas.translate(yCoord * 2, xCoord * 2);
+            drawCell(canvas,x);
+            canvas.restore();
         }
     }
 
@@ -309,6 +340,15 @@ public class MazeView extends View {
             paint.setColor(Color.BLUE);
             canvas.drawRect(0,0,2,2,paint);
         }
+        else if (currentMaze[x] == POWERUP) {
+            paint.setColor(Color.BLUE);
+            canvas.drawRect(0, 0, 2, 2, paint);
+
+            paint.setColor(Color.GREEN);
+            canvas.drawCircle(1f, 1f, 0.5f, paint);
+
+            cakesRemaining++;
+        }
         else {
             paint.setColor(Color.BLUE);
             canvas.drawRect(0,0,2,2,paint);
@@ -319,6 +359,36 @@ public class MazeView extends View {
             //increment cakes remaining
             //serves as a counter with every redraw
             cakesRemaining++;
+        }
+    }
+
+    private void checkGameLost() {
+        for (int x = 0; x < ghosts.length; x++) {
+            if (ghosts[x].currentX == ashman.currentX && ghosts[x].currentY == ashman.currentY) {
+                stopTimer();
+                gameLost = true;
+                Toast.makeText(context, "You got eaten! Level restarted!", Toast.LENGTH_SHORT).show();
+                resetGame(level);
+                playSound(R.raw.death);
+                break;
+            }
+        }
+    }
+
+    private void checkGameWon() {
+        if (cakesRemaining == 0 && active) {
+            stopTimer();
+            gameLost = false;
+            if (level == 1) {
+                Toast.makeText(context, "You beat level " + level + "!\n Let's try level 2!", Toast.LENGTH_SHORT).show();
+                resetGame(2);
+                playSound(R.raw.win);
+            }
+            else {
+                Toast.makeText(context, " You beat level " + level + "!\nCongrats, you won!", Toast.LENGTH_SHORT).show();
+                resetGame(1);
+                playSound(R.raw.win);
+            }
         }
     }
 
@@ -364,14 +434,47 @@ public class MazeView extends View {
         setMeasuredDimension((int) (scale * WIDTH), (int) (scale * HEIGHT));
     }
 
+    //following two overrides needed for destruction and recreation of app during lock screen
     @Override
-    protected void onSizeChanged(int w, int h, int oldw, int oldh) {
-        super.onSizeChanged(w, h, oldw, oldh);
+    protected Parcelable onSaveInstanceState() {
+        Bundle bundle = new Bundle();
 
-        incomingWidth = (float)w;
-        incomingHeight = (float)h;
+        bundle.putInt("level", level);
+        bundle.putSerializable("ashman", ashman);
+        bundle.putInt("numGhosts", ghosts.length);
+        for (int x = 0; x < ghosts.length; x++)
+            bundle.putSerializable("ghost" + x, ghosts[x]);
+        bundle.putBoolean("ghostsMove", ghostsMove);
+        bundle.putBoolean("active", active);
+        bundle.putBoolean("gameLost", gameLost);
+        bundle.putIntArray("currentMaze", currentMaze);
+        bundle.putBoolean("newGame", newGame);
+
+        bundle.putParcelable("instanceState", super.onSaveInstanceState());
+
+        return bundle;
     }
 
+    @Override
+    protected void onRestoreInstanceState(Parcelable state) {
+        if (state instanceof Bundle) {
+            Bundle bundle = (Bundle) state;
 
+            state = bundle.getParcelable("instanceState");
+            level = bundle.getInt("level");
+            ashman =(Ashman)bundle.getSerializable("ashman");
+            ghosts = new Ghost[bundle.getInt("numGhosts")];
+            for (int x = 0; x < ghosts.length; x++)
+                ghosts[x] = (Ghost)bundle.getSerializable("ghost" + x);
+            ghostsMove = bundle.getBoolean("ghostsMove");
+            active = bundle.getBoolean("active");
+            gameLost = bundle.getBoolean("gameLost");
+            currentMaze = bundle.getIntArray("currentMaze");
+            newGame = bundle.getBoolean("newGame");
+            invalidate();
+        }
+
+        super.onRestoreInstanceState(state);
+    }
 }
 
